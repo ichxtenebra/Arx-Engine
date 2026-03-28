@@ -1,5 +1,5 @@
 # --- BUILD LIBRARY ---
-rustc \
+```bashrustc \
   +nightly \
   --edition 2024 \
   --crate-type rlib \
@@ -31,9 +31,10 @@ rustc \
   -Z trap-unreachable=yes \
   -Z fewer-names=yes \
   arx_engine.rs
+```
 
 # --- BUILD EXAMPLE ---
-rustc \
+```bashrustc \
   +nightly \
   --edition 2024 \
   --crate-type bin \
@@ -71,3 +72,4 @@ rustc \
   -Z inline-mir-threshold=9999 \
   -Z fewer-names=yes \
   main.rs -o arx
+```
