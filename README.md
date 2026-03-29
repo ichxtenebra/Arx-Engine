@@ -1,5 +1,6 @@
 # --- BUILD LIBRARY ---
-```bashrustc \
+```bash
+rustc \
   +nightly \
   --edition 2024 \
   --crate-type rlib \
@@ -34,7 +35,8 @@
 ```
 
 # --- BUILD EXAMPLE ---
-```bashrustc \
+```bash
+rustc \
   +nightly \
   --edition 2024 \
   --crate-type bin \
