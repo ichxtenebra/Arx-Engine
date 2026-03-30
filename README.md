@@ -1,27 +1,30 @@
-
+<div align="center">
+<pre>
 ╔══════════════════════════════════════════════════════════════════════╗
 ║                                                                      ║
-║   ░█████╗░██████╗░██╗░░██╗  ███████╗███╗░░██╗░██████╗░██╗███╗░░██╗  ║
-║   ██╔══██╗██╔══██╗╚██╗██╔╝  ██╔════╝████╗░██║██╔════╝░██║████╗░██║  ║
-║   ███████║██████╔╝░╚███╔╝░  █████╗░░██╔██╗██║██║░░██╗░██║██╔██╗██║  ║
-║   ██╔══██║██╔══██╗░██╔██╗░  ██╔══╝░░██║╚████║██║░░╚██╗██║██║╚████║  ║
-║   ██║░░██║██║░░██║██╔╝░██╗  ███████╗██║░╚███║╚██████╔╝██║██║░╚███║  ║
-║   ╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚═╝  ╚══════╝╚═╝░░╚══╝░╚═════╝░╚═╝╚═╝░░╚══╝  ║
+║     _     ____  __  __       _____  _   _   ____  ___  _   _  _____  ║
+║    / \   |  _ \ \ \/ /      | ____|| \ | | / ___||_ _|| \ | || ____| ║
+║   / _ \  | |_) | \  /  ____ |  _|  |  \| || |  _  | | |  \| ||  _|   ║
+║  / ___ \ |  _ <  /  \ |____|| |___ | |\  || |_| | | | | |\  || |___  ║
+║ /_/   \_\|_| \_\/_/\_\      |_____||_| \_| \____||___||_| \_||_____| ║
 ║                                                                      ║
-║          ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓        ║
-║          ▓  v0.0.0.1-s0 — Obsidian Renaissance              ▓        ║
-║          ▓  from nothing — a window                          ▓        ║
-║          ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓        ║
+║  ------------------------------------------------------------------  ║
+║                                                                      ║
+║          ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓          ║
+║          ▓  v0.0.0.1-s0 — Obsidian Renaissance            ▓          ║
+║          ▓  from nothing — a window                       ▓          ║
+║          ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓          ║
 ║                                                                      ║
 ╚══════════════════════════════════════════════════════════════════════╝
-
----
+</pre>
 
 ![Rust](https://img.shields.io/badge/rust-nightly-orange)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Platform](https://img.shields.io/badge/platform-linux%20x86__64-lightgrey)
 ![No Std](https://img.shields.io/badge/no__std-true-green)
 ![Version](https://img.shields.io/badge/version-0.0.0.1--s0-purple)
+
+</div>
 
 ---
 
@@ -49,35 +52,36 @@ The engine speaks the X11 protocol directly over a Unix domain socket, construct
 
 ## Visual Preview
 
-```
-  ┌────────────────────────────────────────────────────────────────┐ y=0
-  │▓▓▓▓▓▓▓▓▓▓▓▓▓▓ AMBER TOP EDGE (#C8A878, 1px) ▓▓▓▓▓▓▓▓▓▓▓▓▓▓│ y=0
-  │████████████████████████████████████████████████████████████████│
-  │██████████████ MIDNIGHT PANEL (#12121E) ███████████████████████│
-  │████████████████████████████████████████████████████████████████│
-  │▒▒▒▒▒▒▒▒▒▒▒▒▒ AMBER SUB-STRIPE (#C8A878, 2px) ▒▒▒▒▒▒▒▒▒▒▒▒│ y=16
-  │████████████████████████████████████████████████████████████████│
-  │████████████████████████████████████████████████████████████████│
-  ├═══════════════ IVORY SEPARATOR (#E8E4DF, 1px) ═══════════════┤ y=50
-  │                                                                │
-  │                                                                │
-  │                    OBSIDIAN VOID (#0A0A0F)                     │
-  │                                                                │
-  │                                                                │
-  │     ─────────── SLATE RULE (#1E1E2C, 1px) ─────────────      │ y=260
-  │                                                                │
-  │                                                                │
-  │                                                                │
-  │                                                                │
-  │     ═══════════ BRONZE RULE (#3D3528, 1px) ════════════      │ y=389
-  │                                                                │
-  │                                                                │
-  └────────────────────────────────────────────────────────────────┘ y=600
+<div align="center">
+<pre>
+    ┌────────────────────────────────────────────────────────────────┐ y=0
+    │▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ AMBER TOP EDGE (#C8A878, 1px) ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓│ y=0
+│████████████████████████████████████████████████████████████████│
+│███████████████████ MIDNIGHT PANEL (#12121E) ███████████████████│
+│████████████████████████████████████████████████████████████████│
+     │▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒ AMBER SUB-STRIPE (#C8A878, 2px) ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒│ y=16
+│████████████████████████████████████████████████████████████████│
+│████████████████████████████████████████████████████████████████│
+     ├════════════════ IVORY SEPARATOR (#E8E4DF, 1px) ════════════════┤ y=50
+│                                                                │
+│                                                                │
+│                    OBSIDIAN VOID (#0A0A0F)                     │
+│                                                                │
+│                                                                │
+      │         ────────── SLATE RULE (#1E1E2C, 1px) ──────────        │ y=260
+│                                                                │
+│                                                                │
+│                                                                │
+│                                                                │
+      │        ══════════ BRONZE RULE (#3D3528, 1px) ══════════        │ y=389
+│                                                                │
+│                                                                │
+      └────────────────────────────────────────────────────────────────┘ y=600
 
-  Dimensions: 800×600 | Panel: 50px | Margin: 16px
-  Golden ratio: rule1 @ 61.8% body, rule2 @ 38.2% body
-```
-
+           Dimensions: 800×600 | Panel: 50px | Margin: 16px
+        Golden ratio: rule1 @ 61.8% body, rule2 @ 38.2% body
+</pre>
+</div>
 ---
 
 ## Color Palette — "Obsidian & Amber"
@@ -97,13 +101,14 @@ The palette is divided into two thermal families: **cold** (structure) and **war
 
 ## Architecture — Hydra Process Topology
 
-```
+<div align="center">
+<pre>
   ╔═══════════════════════════════════════════════════════╗
-  ║                  PROCESS HYDRA                        ║
+  ║                 PROCESS HYDRA                         ║
   ╠═══════════════════════════════════════════════════════╣
   ║                                                       ║
   ║   Level 0: SENTINEL (original process)                ║
-  ║   ├── setsid() + prctl(PR_SET_CHILD_SUBREAPER)       ║
+  ║   ├── setsid() + prctl(PR_SET_CHILD_SUBREAPER)        ║
   ║   ├── close(0,1,2) — detach from terminal             ║
   ║   ├── sigprocmask(SIG_BLOCK, ALL) — block signals     ║
   ║   │                                                   ║
@@ -124,7 +129,8 @@ The palette is divided into two thermal families: **cold** (structure) and **war
   ║  kill -9 two at once → grandparent respawns           ║
   ║  ONLY way to kill: terminate ALL 4 simultaneously     ║
   ╚═══════════════════════════════════════════════════════╝
-```
+</pre>
+</div>
 
 ---
 
@@ -303,7 +309,7 @@ There is no separation between structure and ornament — they are identical. Th
 
 MIT License
 
-Copyright (c) 2025 Help From the Void Independent Systems
+Copyright (c) 2026 Help From the Void Independent Systems
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
