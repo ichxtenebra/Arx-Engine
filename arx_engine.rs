@@ -17,6 +17,13 @@ const SETUP_REQ: [u8; 12] = [
     0x00, 0x00,
 ];
 
+const OBSIDIAN_VOID: u32 = 0x000A0A0F;
+const MIDNIGHT_PANEL: u32 = 0x0012121E;
+const AMBER_ACCENT: u32 = 0x00C8A878;
+const IVORY_RULE_COLOR: u32 = 0x00E8E4DF;
+const DIM_BRONZE: u32 = 0x003D3528;
+const SLATE_EDGE: u32 = 0x001E1E2C;
+
 #[unsafe(no_mangle)]
 pub unsafe extern "C" fn memset(dest: *mut u8, c: i32, n: usize) -> *mut u8 {
     let mut i = 0usize;
@@ -275,112 +282,189 @@ unsafe fn sys_prctl(option: i64, arg2: i64) -> i64 {
 }
 
 #[inline(always)]
-unsafe fn read_u16(buf: *const u8, off: usize) -> u16 {
-    unsafe { core::ptr::read_unaligned(buf.add(off) as *const u16) }
+unsafe fn w32(buf: *mut u8, off: usize, val: u32) {
+    unsafe { buf.add(off).cast::<u32>().write_unaligned(val.to_le()) }
 }
 
 #[inline(always)]
-unsafe fn read_u32(buf: *const u8, off: usize) -> u32 {
-    unsafe { core::ptr::read_unaligned(buf.add(off) as *const u32) }
+unsafe fn w16(buf: *mut u8, off: usize, val: u16) {
+    unsafe { buf.add(off).cast::<u16>().write_unaligned(val.to_le()) }
 }
 
 #[inline(always)]
-unsafe fn write_u16(buf: *mut u8, off: usize, val: u16) {
-    unsafe { core::ptr::write_unaligned(buf.add(off) as *mut u16, val) }
+unsafe fn ws16(buf: *mut u8, off: usize, val: i16) {
+    unsafe { buf.add(off).cast::<i16>().write_unaligned(val.to_le()) }
 }
 
 #[inline(always)]
-unsafe fn write_u32(buf: *mut u8, off: usize, val: u32) {
-    unsafe { core::ptr::write_unaligned(buf.add(off) as *mut u32, val) }
+unsafe fn r32(bp: *const u8, off: usize) -> u32 {
+    unsafe { core::ptr::read_unaligned(bp.add(off) as *const u32) }
 }
 
 #[inline(always)]
+unsafe fn r16(bp: *const u8, off: usize) -> u16 {
+    unsafe { core::ptr::read_unaligned(bp.add(off) as *const u16) }
+}
+
 unsafe fn renderer(ox: i16, oy: i16, w: u16, h: u16) -> ! {
     unsafe {
         let fd = sys_socket();
-        if fd < 0 {
-            sys_exit_group(0);
-        }
-
-        let ret = sys_connect(fd, SOCKADDR.as_ptr(), 20);
-        if ret < 0 {
-            let _ = sys_close(fd);
-            sys_exit_group(0);
-        }
-
-        let _ = sys_write(fd, SETUP_REQ.as_ptr(), 12);
+        sys_connect(fd, SOCKADDR.as_ptr(), 20);
+        sys_write(fd, SETUP_REQ.as_ptr(), 12);
 
         let mut buf = core::mem::MaybeUninit::<[u8; 4096]>::uninit();
-        let buf_ptr = buf.as_mut_ptr() as *mut u8;
-        let n = sys_read(fd, buf_ptr, 4096);
-        if n < 8 {
-            let _ = sys_close(fd);
-            sys_exit_group(0);
-        }
+        let bp = buf.as_mut_ptr() as *mut u8;
+        sys_read(fd, bp, 4096);
 
-        let bp = buf_ptr as *const u8;
-
-        if *bp != 1 {
-            let _ = sys_close(fd);
-            sys_exit_group(0);
-        }
-
-        let id_base = read_u32(bp, 12);
-        let vendor_len = read_u16(bp, 24) as usize;
-        let num_fmts = *bp.add(29) as usize;
+        let rbp = bp as *const u8;
+        let id_base = r32(rbp, 12);
+        let vendor_len = r16(rbp, 24) as usize;
+        let num_fmts = *rbp.add(29) as usize;
         let padded_vendor = (vendor_len + 3) & !3;
-        let screen_off = 40 + padded_vendor + num_fmts * 8;
+        let scr_off = 40 + padded_vendor + num_fmts * 8;
 
-        if screen_off + 40 > n as usize {
-            let _ = sys_close(fd);
-            sys_exit_group(0);
-        }
+        let root_wid = r32(rbp, scr_off);
+        let scr_w = r16(rbp, scr_off + 20) as i32;
+        let scr_h = r16(rbp, scr_off + 22) as i32;
+        let root_visual = r32(rbp, scr_off + 32);
+        let root_depth = *rbp.add(scr_off + 38);
 
-        let root_wid = read_u32(bp, screen_off);
-        let black_pixel = read_u32(bp, screen_off + 12);
-        let scr_w = read_u16(bp, screen_off + 20) as i32;
-        let scr_h = read_u16(bp, screen_off + 22) as i32;
-        let root_visual = read_u32(bp, screen_off + 32);
-        let root_depth = *bp.add(screen_off + 38);
+        let wid = id_base | 1;
+        let gid = id_base | 2;
 
-        let window_id = id_base | 1;
+        let cx = ((scr_w - w as i32) / 2 + ox as i32) as i16;
+        let cy = ((scr_h - h as i32) / 2 + oy as i32) as i16;
 
-        let fx = ((scr_w - w as i32) / 2 + ox as i32) as i16;
-        let fy = ((scr_h - h as i32) / 2 + oy as i32) as i16;
+        let panel_h = (h / 12) as i16;
+        let stripe_y = panel_h / 3;
+        let margin = (w / 50) as i16;
+        let body_h = h as i16 - panel_h;
+        let rule1_y = panel_h + (body_h as i32 * 809 / 1309) as i16;
+        let rule2_y = panel_h + (body_h as i32 * 500 / 1309) as i16;
+        let w_i16 = w as i16;
 
-        let mut req = core::mem::MaybeUninit::<[u8; 40]>::uninit();
-        let rp = req.as_mut_ptr() as *mut u8;
-        *rp.add(0) = 1;
-        *rp.add(1) = root_depth;
-        write_u16(rp, 2, 10);
-        write_u32(rp, 4, window_id);
-        write_u32(rp, 8, root_wid);
-        write_u16(rp, 12, fx as u16);
-        write_u16(rp, 14, fy as u16);
-        write_u16(rp, 16, w);
-        write_u16(rp, 18, h);
-        write_u16(rp, 20, 0);
-        write_u16(rp, 22, 1);
-        write_u32(rp, 24, root_visual);
-        write_u32(rp, 28, 0x00000202);
-        write_u32(rp, 32, black_pixel);
-        write_u32(rp, 36, 1);
+        *bp.add(0) = 1;
+        *bp.add(1) = root_depth;
+        w16(bp, 2, 10);
+        w32(bp, 4, wid);
+        w32(bp, 8, root_wid);
+        ws16(bp, 12, cx);
+        ws16(bp, 14, cy);
+        w16(bp, 16, w);
+        w16(bp, 18, h);
+        w16(bp, 20, 0);
+        w16(bp, 22, 1);
+        w32(bp, 24, root_visual);
+        w32(bp, 28, 0x00000202);
+        w32(bp, 32, OBSIDIAN_VOID);
+        w32(bp, 36, 1);
 
-        let _ = sys_write(fd, rp as *const u8, 40);
+        *bp.add(40) = 55;
+        *bp.add(41) = 0;
+        w16(bp, 42, 5);
+        w32(bp, 44, gid);
+        w32(bp, 48, wid);
+        w32(bp, 52, 0x00000004);
+        w32(bp, 56, MIDNIGHT_PANEL);
 
-        let mut map_req = core::mem::MaybeUninit::<[u8; 8]>::uninit();
-        let mp = map_req.as_mut_ptr() as *mut u8;
-        *mp.add(0) = 8;
-        *mp.add(1) = 0;
-        write_u16(mp, 2, 2);
-        write_u32(mp, 4, window_id);
+        *bp.add(60) = 70;
+        *bp.add(61) = 0;
+        w16(bp, 62, 5);
+        w32(bp, 64, wid);
+        w32(bp, 68, gid);
+        ws16(bp, 72, 0);
+        ws16(bp, 74, 0);
+        w16(bp, 76, w);
+        w16(bp, 78, panel_h as u16);
 
-        let _ = sys_write(fd, mp as *const u8, 8);
+        *bp.add(80) = 56;
+        *bp.add(81) = 0;
+        w16(bp, 82, 4);
+        w32(bp, 84, gid);
+        w32(bp, 88, 0x00000004);
+        w32(bp, 92, AMBER_ACCENT);
+
+        *bp.add(96) = 70;
+        *bp.add(97) = 0;
+        w16(bp, 98, 5);
+        w32(bp, 100, wid);
+        w32(bp, 104, gid);
+        ws16(bp, 108, 0);
+        ws16(bp, 110, stripe_y);
+        w16(bp, 112, w);
+        w16(bp, 114, 2);
+
+        *bp.add(116) = 66;
+        *bp.add(117) = 0;
+        w16(bp, 118, 5);
+        w32(bp, 120, wid);
+        w32(bp, 124, gid);
+        ws16(bp, 128, 0);
+        ws16(bp, 130, 0);
+        ws16(bp, 132, w_i16 - 1);
+        ws16(bp, 134, 0);
+
+        *bp.add(136) = 56;
+        *bp.add(137) = 0;
+        w16(bp, 138, 4);
+        w32(bp, 140, gid);
+        w32(bp, 144, 0x00000004);
+        w32(bp, 148, IVORY_RULE_COLOR);
+
+        *bp.add(152) = 66;
+        *bp.add(153) = 0;
+        w16(bp, 154, 5);
+        w32(bp, 156, wid);
+        w32(bp, 160, gid);
+        ws16(bp, 164, 0);
+        ws16(bp, 166, panel_h);
+        ws16(bp, 168, w_i16 - 1);
+        ws16(bp, 170, panel_h);
+
+        *bp.add(172) = 56;
+        *bp.add(173) = 0;
+        w16(bp, 174, 4);
+        w32(bp, 176, gid);
+        w32(bp, 180, 0x00000004);
+        w32(bp, 184, SLATE_EDGE);
+
+        *bp.add(188) = 66;
+        *bp.add(189) = 0;
+        w16(bp, 190, 5);
+        w32(bp, 192, wid);
+        w32(bp, 196, gid);
+        ws16(bp, 200, margin);
+        ws16(bp, 202, rule2_y);
+        ws16(bp, 204, w_i16 - margin - 1);
+        ws16(bp, 206, rule2_y);
+
+        *bp.add(208) = 56;
+        *bp.add(209) = 0;
+        w16(bp, 210, 4);
+        w32(bp, 212, gid);
+        w32(bp, 216, 0x00000004);
+        w32(bp, 220, DIM_BRONZE);
+
+        *bp.add(224) = 66;
+        *bp.add(225) = 0;
+        w16(bp, 226, 5);
+        w32(bp, 228, wid);
+        w32(bp, 232, gid);
+        ws16(bp, 236, margin);
+        ws16(bp, 238, rule1_y);
+        ws16(bp, 240, w_i16 - margin - 1);
+        ws16(bp, 242, rule1_y);
+
+        *bp.add(244) = 8;
+        *bp.add(245) = 0;
+        w16(bp, 246, 2);
+        w32(bp, 248, wid);
+
+        sys_write(fd, bp as *const u8, 252);
 
         loop {
-            let nr = sys_read(fd, buf_ptr, 4096);
+            let nr = sys_read(fd, bp, 4096);
             if nr <= 0 {
-                let _ = sys_close(fd);
                 sys_exit_group(0);
             }
         }
