@@ -82,6 +82,7 @@ The engine speaks the X11 protocol directly over a Unix domain socket, construct
         Golden ratio: rule1 @ 61.8% body, rule2 @ 38.2% body
 </pre>
 </div>
+
 ---
 
 ## Color Palette — "Obsidian & Amber"
