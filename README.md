@@ -12,6 +12,30 @@
 
 ---
 
+## Build
+```bash
+
+fasm Arx-Engine.asm Arx-Engine.o
+ar rcs Arx-Engine.a Arx-Engine.o
+fasm main.asm main.o
+
+ld \
+    --static \
+    -e arx_start \
+    --gc-sections \
+    --build-id=none \
+    -z noexecstack \
+    --no-eh-frame-hdr \
+    --hash-style=sysv \
+    -z noseparate-code \
+    -O2 \
+    main.o Arx-Engine.a \
+    -o Arx-Engine
+
+ls -la Arx-Engine
+ldd Arx-Engine || true
+```
+
 ## License
 
 MIT License
